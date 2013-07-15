@@ -1,0 +1,37 @@
+<header class="header">
+ <!--bootstrap<div class="navbar  navbar-inverse navbar-fixed-top">-->
+ <!-- angularstrap -->
+ <div class="navbar" bs-navbar="">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Neuro-Sand-Cube-Console</a>
+          <!-- bootstrap<div class="nav-collapse collapse">-->
+		  
+            <ul class="nav">
+              <li data-match-route="/console"><a href="#/console">Console</a></li>
+	      <li data-match-route="/trial" ng-show="!trial.active"><a href="#/trial">Start trial</a></li><!--bs-modal="'views/starttrial.html'"-->
+	      <li data-match-route="/" ng-show="trial.active"><a href="#" ng-click="trial.endTrial()">Stop trial</a></li>
+              <li data-match-route="/logs"><a href="#/logs">Logs</a></li>
+            </ul>
+<b>
+	    <span class="pull-right">Connected to NSC: {{connected()}}</span><br>
+	    <span class="pull-right" ng-show="trial.active">{{trial.name}} in progress.  Trial duration: {{trial.minutes}}:{{trial.seconds}} </span>
+	    <span class="pull-right" ng-show="!trial.active">No trial in progress. </span>
+
+</b>
+          </div><!--/.nav-collapse -->
+        </div>
+ </div>
+</header>
+
+
+
+<!--
+<li class="dropdown" data-match-route="/trial"><a href="#/trial">Start Trial</a>
+		<a href="#/trial" class="dropdown-toggle" data-toggle="dropdown">Trial <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#/trial">Start trial</a></li>
+                  <li><a href="#">Stop trial</a></li>
+                </ul>
+	      </li>
+-->

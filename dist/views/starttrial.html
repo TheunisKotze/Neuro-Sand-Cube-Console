@@ -1,0 +1,39 @@
+<div class="text-center container">
+    <h3>New trial</h3>
+  <form name="trialForm" ng-submit="startTrial()" class="form-horizontal" ng-controller="StarttrialCtrl">
+
+    <div class="control-group">
+        <label class="control-label" for="trial_name">Trial name:</label>
+        <div class="controls">
+            <input ng-model="trial.name" required="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="animal_number">Animal number:</label>
+        <div class="controls">
+            <input ng-model="trial.animal" required="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="trial_length"> Trial length:</label>
+        <div class="controls">
+            <input ng-model="trial.length" required="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="trial_date">Date:</label>
+        <div class="controls">
+            <input ng-model="trial.date" required="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="trial_time">Time:</label>
+        <div class="controls">
+            <input ng-model="trial.time" required="">
+        </div>
+    </div>
+    <span id="errors">&nbsp;</span>
+    <button ng-disabled="trialForm.$invalid" class="btn" type="submit">Start Trial</button>
+    <button type="button" class="btn" ng-click="defaults()">Defaults</button>
+  </form>
+</div>
