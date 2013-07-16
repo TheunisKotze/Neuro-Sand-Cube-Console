@@ -96,7 +96,7 @@ server.io.sockets.on('connection', (socket) ->
         socket.on('stop_trial', (data) ->
                 trial.end()) #if trial was responsible for this, trial would be 99% hidden. good or not?
         socket.on('trial', (data) ->
-                createLogFileName(data.name, data.animalNumber, data.date, data.time)
+                createLogFileName(data.name, data.animal, data.date, data.time)
                 server.nscServer.SendData(JSON.stringify(command)+'\n') for command in tmpReset
                 trial.start(data.name, data.animal,parseInt(data.length), data.date, data.time, (trialUpdate) -> server.io.sockets.emit('trial_progress',trialUpdate)))
         socket.on('trial_progress_request', -> sendTimeUpdate())

@@ -21540,73 +21540,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
 }.call(this));
 (function () {
   'use strict';
-  var DataID, getBaseURL, throttle;
-  DataID = 'nsc';
-  getBaseURL = function () {
-    return location.protocol + '//' + location.hostname + (location.port && ':' + location.port) + '/';
-  };
-  throttle = function (f, wait) {
-    var args, context, later, previous, timeout;
-    previous = 0;
-    context = null;
-    args = null;
-    timeout = null;
-    later = function () {
-      var result;
-      previous = new Date();
-      timeout = null;
-      return result = f.apply(context, args);
-    };
-    return function () {
-      var now, remaining, result;
-      now = new Date();
-      remaining = wait - (now - previous);
-      context = this;
-      args = arguments;
-      if (remaining <= 0) {
-        clearTimeout(timeout);
-        timeout = null;
-        previous = now;
-        result = func.apply(context, args);
-      } else if (!timeout) {
-        timeout = setTimeout(later, remaining);
-      }
-      return result;
-    };
-  };
-  angular.module('NeuroSandCubeConsoleApp').factory('socket', [
-    '$rootScope',
-    function ($rootScope) {
-      var socket, url;
-      url = getBaseURL();
-      socket = io.connect(url);
-      return {
-        on: function (eventName, callback) {
-          return socket.on(eventName, _.throttle(function () {
-            var args;
-            args = arguments;
-            return $rootScope.$apply(function () {
-              return callback.apply(socket, args);
-            });
-          }, 100));
-        },
-        emit: function (eventName, data, callback) {
-          return socket.emit(eventName, data, function () {
-            var args;
-            args = arguments;
-            return $rootScope.$apply(function () {
-              if (callback) {
-                return callback.apply(socket, args);
-              }
-            });
-          });
-        }
-      };
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
   angular.module('NeuroSandCubeConsoleApp').directive('dynamichighchart', function () {
     var getMergedOptions;
     getMergedOptions = function (element, options) {
@@ -21616,8 +21549,12 @@ angular.module('$strap.directives').directive('bsTypeahead', [
           renderTo: element[0],
           animation: false,
           width: 300,
-          height: 200
+          height: 200,
+          shadow: false
         },
+        credits: { enabled: false },
+        legend: { enabled: false },
+        tooltip: { enabled: false },
         title: {},
         series: [{
             data: [],
@@ -21667,68 +21604,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
       }
     };
   });
-}.call(this));
-(function () {
-  'use strict';
-  angular.module('NeuroSandCubeConsoleApp').factory('serverCommunicator', [
-    '$rootScope',
-    'socket',
-    function ($rootScope, socket) {
-      var connected, endTrial, newStates, _trial;
-      _trial = {};
-      newStates = {};
-      connected = false;
-      socket.on('connection', function (connection) {
-        return connected = connection.connected;
-      });
-      endTrial = function () {
-        return socket.emit('stop_trial', {}, function () {
-        });
-      };
-      socket.on('trial_progress', function (trial) {
-        _trial.active = trial.active;
-        _trial.timeRemaining = trial.time;
-        return _trial.name = trial.name;
-      });
-      socket.on('nsc', function (data) {
-        var date, frame, states, timestamp;
-        states = JSON.parse(data);
-        if (!_.any(states, function (obj) {
-            return obj.id === 'timestamp';
-          })) {
-          return;
-        }
-        timestamp = _.findWhere(states, { id: 'timestamp' }).value;
-        newStates = {};
-        date = new Date();
-        date.setTime(timestamp);
-        frame = _.findWhere(states, { id: 'frame' }).value;
-        return _.forEach(states, function (state) {
-          var _ref;
-          if (!((_ref = state.id) === 'timestamp' || _ref === 'frame')) {
-            return newStates[state.id] = {
-              value: state.value,
-              count: state.change_count,
-              time: date.getTime(),
-              frame: frame
-            };
-          }
-        });
-      });
-      return {
-        connected: function () {
-          return connected;
-        },
-        trial: function () {
-          return _trial;
-        },
-        newStates: function () {
-          return newStates;
-        },
-        endTrial: endTrial
-      };
-    }
-  ]);
 }.call(this));
 (function () {
   'use strict';

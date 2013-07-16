@@ -9,6 +9,13 @@ angular.module('NeuroSandCubeConsoleApp')
                                 animation: false
                                 width: 300
                                 height: 200
+                                shadow: false
+                        credits:
+                          enabled: false
+                        legend:
+                          enabled: false
+                        tooltip:
+                          enabled: false
                         title: {}
                         series: [data: [], enableMouseTracking:false]
                 mergedOptions = {}
