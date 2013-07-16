@@ -60,14 +60,16 @@ module.exports = server.app
 tmpReset = 
 [{ id: "reset_counter", target: "player_x" },
 { id: "reset_counter", target: "player_y" },
-{ id: "reset_counter", target: "player_left_click" },
-{ id: "reset_counter", target: "player_right_click" },
+#{ id: "reset_counter", target: "player_left_click" },
+#{ id: "reset_counter", target: "player_right_click" },
 { id: "reset_counter", target: "teleport" },
 { id: "reset_counter", target: "player_angle" },
 { id: "reset_counter", target: "correct_trial" },
 { id: "reset_counter", target: "incorrect_trial" },
 { id: "reset_counter", target: "reward_issued" },
-{ id: "reset_counter", target: "distance_traveled" }]
+{ id: "reset_counter", target: "trial_start"}
+#{ id: "reset_counter", target: "distance_traveled" }
+]
 
 logData = ((file, data) ->
         fs.appendFile(file, data.toString(), ((err) -> 
