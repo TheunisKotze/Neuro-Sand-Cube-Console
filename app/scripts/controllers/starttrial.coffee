@@ -1,5 +1,11 @@
 'use strict'
 
+enforceLength2 = (val) ->
+  if (val.toString().length == 1)
+    return '0' + val
+  else
+    return val
+
 angular.module('NeuroSandCubeConsoleApp')
   .controller 'StarttrialCtrl', ($location, $scope, socket) ->
     $scope.trial ?= {}
@@ -8,10 +14,16 @@ angular.module('NeuroSandCubeConsoleApp')
         $scope.trial.name = ""
         $scope.trial.animal = ""
         $scope.trial.length = 30
-        newDate = new Date()
 
-        $scope.trial.date = newDate.toISOString().substring(0,10)
-        $scope.trial.time = newDate.toISOString().substring(11,16)
+        date = new Date()
+        day = enforceLength2(date.getDate())
+        year = date.getFullYear();
+        month = enforceLength2(date.getMonth()+1)
+        hour = enforceLength2(date.getHours())
+        minute = enforceLength2(date.getMinutes())
+
+        $scope.trial.date = year + '-' + month + '-' + day
+        $scope.trial.time = hour + ':' + minute
         
     $scope.startTrial = ->
         # validate

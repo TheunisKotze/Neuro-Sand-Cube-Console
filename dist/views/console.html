@@ -38,7 +38,7 @@
 	  <tr ng-repeat="(id, state) in states">
 	    <td> {{ id }} </td>
 	    <td> {{ state.count }} </td>
-	    <td> {{ state.time }}  </td>
+	    <td> {{ state.time | localDate }}  </td>
 	    <td> {{ state.frame }} </td>
 	    <td> {{ state.value }} </td>
 	  </tr>

@@ -25,8 +25,9 @@ angular.module('NeuroSandCubeConsoleApp')
     $scope.$watch($scope.newStates, ((newStates, oldStates) ->
       for id of newStates
         state = newStates[id]
-        if not(id of $scope.charts)
-          $scope.charts[id] = createChart(id, state)
-        $scope.charts[id].series = [{ data: [] }]
-        $scope.charts[id].series[0].data.push {x: state.time,y: state.value}
+        if not(id in ['trial_start'])
+          if not(id of $scope.charts )
+            $scope.charts[id] = createChart(id, state)
+          $scope.charts[id].series = [{ data: [] }]
+          $scope.charts[id].series[0].data.push {x: state.time,y: state.value}
     ),true)
