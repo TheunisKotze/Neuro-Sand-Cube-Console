@@ -28,15 +28,13 @@ If you are going to edit coffeescript code, you will need to install coffeescrip
 
 ## Usage
 
-If any changes have been made to server.coffee, compile it to javascript:  
-```> coffee server.coffee```  
+A batch script is included:
+```> CLICK_ME_TO_START.bat ```
 
-To run the web server:  
-```> node server [host] [port]```
-
-The above commands starts a web server, which connects to a Neuro-Sand-Cube server on ```host:port``` (default = ```localhost:12345```). The server will continuously attempt to connect, until a connection is made. 
+The above commands compiles the required source and starts a web server, which connects to a Neuro-Sand-Cube server on ```host:port``` (default = ```localhost:12345```). The server will continuously attempt to connect, until a connection is made.
 Once the server is up and running, clients on the network can connect to the webserver via http on port 8000.  For example, to connect to the server from the same machine, the user would enter ```http://locahost:8000``` into a web browser.  If the server is hosted on a computer with the domain name ```network-pc```, the user would enter ```http://network-pc:8000``` into the browser.
 
-At the moment, the Neuro-Sand-Cube-Console has limited functionality.  The last 30 messages received from the Neuro-Sand-Cube server is logged, as well as a table of states along with the latest values of those states.  The user can also send commands to the Neuro-Sand-Cube server, these are described in the Neuro-Sand-Cube readme.
+The Neuro-Sand-Cube-Console displays state information streamed from the Neuro-Sand-Cube server.  Via the interface, the user can start a trial.  For the duration of the trial, the incoming data from the Neuro-Sand-Cube server is logged to file, which can be downloaded from the console.
+The user can send commands to the Neuro-Sand-Cube server, as described in the Neuro-Sand-Cube readme.
 
-Note that the computer on which the web server runs acts as client to the Neuro-Sand-Cube server, the client to the web-server does not make a connection to the Neuro-Sand-Cube server.  This should be kept in mind when setting up the Neuro-Sand-Cube configuration file.
+Note that the computer on which the web server runs acts as client to the Neuro-Sand-Cube server, the client to the web-server does not make a connection directly to the Neuro-Sand-Cube server.  This should be kept in mind when setting up the Neuro-Sand-Cube configuration file.
