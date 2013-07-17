@@ -1,51 +1,56 @@
 <div class="row" ng-controller="ConsoleCtrl">
-  <div class="pull-right">
-    <svg xmlns="http://www.w3.org/2000/svg"	xmlns:xlink="http://www.w3.org/1999/xlink" width="300" height = "300" id ="map-container" ng-controller="MapCtrl">
-      <g transform="scale(0.75)">
-	    <rect  x="130" y="0" width="40" height="300"></rect>
-	    <rect  x="25" y="0" width="250" height="40"></rect>
-	    <image id="mouseSVG" x="{{x}}" y="{{y}}" transform="rotate({{90+angle}} {{x+15}} {{y+15}})" width="30" height="30" xlink:href="images/lab-mouse.svg"></image>
-      </g>
-    </svg>
-  </div>
   <div class="container">
+   <div class="row">
     <form class="form-inline">
       <label>Id: <input type="text" class="input-small" placeholder="Id" ng-model="commandId" bs-typeahead="commandIDs"> </label>
       <label>Target: <input type="text" class="input-small" placeholder="Target" ng-model="commandTarget" bs-typeahead="commandTargets"></label>
-      <button type="submit" class="btn" ng-click="sendCommand()">Send Command</button> 
+      <button type="submit" class="btn" ng-click="sendCommand()">Send Command</button>
       { "id" : "{{commandId}}", "target" : "{{commandTarget}}" }
-      
-    </form>
-    <div class="row">
-      <table class="table" class="span8" ng-controller="TableStateCtrl">
-	<thead>
-	  <tr>
-	    <th>state</th>
-	    <th>change_count</th>
-	    <th>time</th>
-	    <th>frame</th>
-	    <th>value</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr ng-hide="trial.hasData">
-	    <td> xxxxxxxxxx </td>
-	    <td> xxxxxxxxxx </td>
-	    <td> xxxxxxxxxx </td>
-	    <td> xxxxxxxxxx </td>
-	    <td> xxxxxxxxxx </td>
-	  </tr>
-	  <tr ng-repeat="(id, state) in states">
-	    <td> {{ id }} </td>
-	    <td> {{ state.count }} </td>
-	    <td> {{ state.time | localDate }}  </td>
-	    <td> {{ state.frame }} </td>
-	    <td> {{ state.value }} </td>
-	  </tr>
-	</tbody>
+
+     </form>
+    </div>
+   </div>
+   <div class="row">
+    <div class="pull-right">
+     <svg xmlns="http://www.w3.org/2000/svg"	xmlns:xlink="http://www.w3.org/1999/xlink" width="300" height = "300" id ="map-container" ng-controller="MapCtrl">
+            <g transform="scale(0.75)">
+                <rect  x="130" y="0" width="40" height="300"></rect>
+                <rect  x="25" y="0" width="250" height="40"></rect>
+                <image id="mouseSVG" ng-repeat="pos in history" ng-attr-x="{{pos.x}}" ng-attr-y="{{pos.y}}" ng-attr-transform="rotate({{90+pos.angle}} {{pos.x+15}} {{pos.y+15}})" width="30" height="30" xlink:href="images/lab-mouse.svg" ng-attr-style="opacity:{{($index/(history.length*1.5)+0.1)}}"></image>
+                <image id="mouseSVG"  ng-attr-x="{{currentPosition.x}}" ng-attr-y="{{currentPosition.y}}" ng-attr-transform="rotate({{90+currentPosition.angle}} {{currentPosition.x+15}} {{currentPosition.y+15}})" width="30" height="30" xlink:href="images/lab-mouse.svg"></image>
+            </g>
+     </svg>
+    </div>
+    <div class="container">
+      <table class="table" class="span8" style="width: 80%" ng-controller="TableStateCtrl">
+        <thead>
+          <tr>
+            <th>state</th>
+            <th>count</th>
+            <th>time</th>
+            <th>frame</th>
+            <th>value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-hide="trial.hasData">
+            <td> xxxxxxx </td>
+            <td> xxxxxxx </td>
+            <td> xxxxxxx </td>
+            <td> xxxxxxx </td>
+            <td> xxxxxxx </td>
+          </tr>
+          <tr ng-repeat="(id, state) in states">
+            <td> {{ id }} </td>
+            <td> {{ state.count }} </td>
+            <td> {{ state.time | localDate }}  </td>
+            <td> {{ state.frame }} </td>
+            <td> {{ state.value }} </td>
+          </tr>
+        </tbody>
       </table>
     </div>
-  </div>
+   </div>
 </div>
 <div class="row" ng-controller="GraphStateCtrl">
   <div class="span4" ng-repeat="chart in charts">
