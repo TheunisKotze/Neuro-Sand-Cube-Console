@@ -21954,24 +21954,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
 }.call(this));
 (function () {
   'use strict';
-  angular.module('NeuroSandCubeConsoleApp', ['$strap.directives']).config([
-    '$routeProvider',
-    function ($routeProvider) {
-      return $routeProvider.when('/', { redirectTo: '/console' }).when('/trial', {
-        templateUrl: 'views/starttrial.html',
-        controller: 'StarttrialCtrl'
-      }).when('/console', {
-        templateUrl: 'views/console.html',
-        controller: 'ConsoleCtrl'
-      }).when('/logs', {
-        templateUrl: 'views/logs.html',
-        controller: 'LogsCtrl'
-      }).otherwise({ redirectTo: '/' });
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
   var calculateTime, trialTimeInterval;
   trialTimeInterval = 1000;
   calculateTime = function (scope) {
@@ -22002,85 +21984,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
         $scope.trial = {};
       }
       if ($scope.alerts == null) {
-        $scope.alerts = [];
-      }
-      $scope.trial.hasData = false;
-      $scope.connected = serverCommunicator.connected;
-      $scope._trial = serverCommunicator.trial;
-      onEndTrial = function (name) {
-        return $scope.alerts.push({
-          'type': 'info',
-          'title': name,
-          'content': 'finished at ' + new Date() + '.'
-        });
-      };
-      timerPromise = null;
-      timerCallback = function () {
-        $scope.trial.timeRemaining -= trialTimeInterval;
-        if ($scope.trial.timeRemaining < 0) {
-          $scope.trial.timeRemaining = 0;
-        }
-        calculateTime($scope);
-        if (!$scope.trial.active) {
-          $timeout.cancel(timerPromise);
-          return timerPromise = null;
-        } else {
-          return timerPromise = $timeout(timerCallback, trialTimeInterval);
-        }
-      };
-      $scope.$watch($scope._trial, function (trial, oldTrial) {
-        $scope.trial.active = trial.active;
-        $scope.trial.timeRemaining = trial.timeRemaining;
-        $scope.trial.name = trial.name;
-        calculateTime($scope);
-        if (trial.active && timerPromise === null) {
-          timerPromise = $timeout(timerCallback, trialTimeInterval);
-        } else if (!trial.active) {
-          $timeout.cancel(timerPromise);
-          timerPromise = null;
-        }
-        if (!trial.active && oldTrial.active) {
-          return onEndTrial(trial.name);
-        }
-      }, true);
-      return $scope.trial.endTrial = function () {
-        return serverCommunicator.endTrial();
-      };
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
-  var calculateTime, trialTimeInterval;
-  trialTimeInterval = 1000;
-  calculateTime = function (scope) {
-    var seconds;
-    scope.trial.minutes = Math.floor(scope.trial.timeRemaining / (60 * 1000));
-    seconds = Math.floor(scope.trial.timeRemaining % (60 * 1000) / 1000);
-    if (seconds.toString().length === 1) {
-      return scope.trial.seconds = '0' + seconds;
-    } else {
-      return scope.trial.seconds = seconds;
-    }
-  };
-  angular.module('NeuroSandCubeConsoleApp').controller('MainCtrl', [
-    '$scope',
-    '$timeout',
-    'socket',
-    'serverCommunicator',
-    function ($scope, $timeout, socket, serverCommunicator) {
-      var onEndTrial, timerCallback, timerPromise, _ref, _ref1, _ref2, _ref3;
-      console.log('Main ctrl');
-      if ((_ref = $scope.states) == null) {
-        $scope.states = {};
-      }
-      if ((_ref1 = $scope.charts) == null) {
-        $scope.charts = {};
-      }
-      if ((_ref2 = $scope.trial) == null) {
-        $scope.trial = {};
-      }
-      if ((_ref3 = $scope.alerts) == null) {
         $scope.alerts = [];
       }
       $scope.trial.hasData = false;
@@ -22171,48 +22074,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
 }.call(this));
 (function () {
   'use strict';
-  var enforceLength2;
-  enforceLength2 = function (val) {
-    if (val.toString().length === 1) {
-      return '0' + val;
-    } else {
-      return val;
-    }
-  };
-  angular.module('NeuroSandCubeConsoleApp').controller('StarttrialCtrl', [
-    '$location',
-    '$scope',
-    'socket',
-    function ($location, $scope, socket) {
-      var _ref;
-      if ((_ref = $scope.trial) == null) {
-        $scope.trial = {};
-      }
-      $scope.defaults = function () {
-        var date, day, hour, minute, month, year;
-        $scope.trial.name = '';
-        $scope.trial.animal = '';
-        $scope.trial.length = 30;
-        date = new Date();
-        day = enforceLength2(date.getDay());
-        year = date.getFullYear();
-        month = enforceLength2(date.getMonth());
-        hour = enforceLength2(date.getHours());
-        minute = enforceLength2(date.getMinutes());
-        $scope.trial.date = year + '-' + month + '-' + day;
-        return $scope.trial.time = hour + ':' + minute;
-      };
-      $scope.startTrial = function () {
-        $location.path('/console');
-        return socket.emit('trial', $scope.trial, function () {
-        });
-      };
-      return $scope.defaults();
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
   angular.module('NeuroSandCubeConsoleApp').controller('ConsoleCtrl', [
     '$scope',
     'socket',
@@ -22255,49 +22116,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
 }.call(this));
 (function () {
   'use strict';
-  angular.module('NeuroSandCubeConsoleApp').controller('ConsoleCtrl', [
-    '$scope',
-    'socket',
-    function ($scope, socket) {
-      var _ref, _ref1;
-      console.log('Console ctrl');
-      if ((_ref = $scope.commandIDs) == null) {
-        $scope.commandIDs = [
-          'restart_map',
-          'reset_counter',
-          'flush_water_reward',
-          'issue_reward'
-        ];
-      }
-      if ((_ref1 = $scope.commandTargets) == null) {
-        $scope.commandTargets = [
-          'level_restart',
-          'player_x',
-          'player_y',
-          'player_left_click',
-          'player_right_click',
-          'teleport',
-          'player_angle',
-          'distance_traveled',
-          'trial_start',
-          'correct_trial',
-          'incorrect_trial',
-          'reward_issued'
-        ];
-      }
-      return $scope.sendCommand = function () {
-        var command;
-        command = {};
-        command.id = $scope.commandId;
-        command.target = $scope.commandTarget;
-        return socket.emit('command', command, function () {
-        });
-      };
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
   var getBaseURL;
   getBaseURL = function () {
     return location.protocol + '//' + location.hostname + (location.port && ':' + location.port) + '/';
@@ -22327,107 +22145,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
       if (!($scope.logs != null)) {
         return $scope.getLogs();
       }
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
-  var getBaseURL;
-  getBaseURL = function () {
-    return location.protocol + '//' + location.hostname + (location.port && ':' + location.port) + '/';
-  };
-  angular.module('NeuroSandCubeConsoleApp').controller('LogsCtrl', [
-    '$scope',
-    'socket',
-    function ($scope, socket) {
-      $scope.getLogs = function () {
-        $scope.logs = [];
-        return socket.emit('logs_request', {}, function () {
-        });
-      };
-      socket.on('logs', function (logs) {
-        var i, log, _results;
-        i = 0;
-        _results = [];
-        while (i < logs.length) {
-          log = {};
-          log.url = getBaseURL() + 'log/' + i.toString();
-          log.name = logs[i];
-          $scope.logs.push(log);
-          _results.push(++i);
-        }
-        return _results;
-      });
-      if (!($scope.logs != null)) {
-        return $scope.getLogs();
-      }
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
-  var DataID, getBaseURL, throttle;
-  DataID = 'nsc';
-  getBaseURL = function () {
-    return location.protocol + '//' + location.hostname + (location.port && ':' + location.port) + '/';
-  };
-  throttle = function (f, wait) {
-    var args, context, later, previous, timeout;
-    previous = 0;
-    context = null;
-    args = null;
-    timeout = null;
-    later = function () {
-      var result;
-      previous = new Date();
-      timeout = null;
-      return result = f.apply(context, args);
-    };
-    return function () {
-      var now, remaining, result;
-      now = new Date();
-      remaining = wait - (now - previous);
-      context = this;
-      args = arguments;
-      if (remaining <= 0) {
-        clearTimeout(timeout);
-        timeout = null;
-        previous = now;
-        result = func.apply(context, args);
-      } else if (!timeout) {
-        timeout = setTimeout(later, remaining);
-      }
-      return result;
-    };
-  };
-  angular.module('NeuroSandCubeConsoleApp').factory('socket', [
-    '$rootScope',
-    function ($rootScope) {
-      var socket, url;
-      url = getBaseURL();
-      socket = io.connect(url);
-      return {
-        on: function (eventName, callback) {
-          return socket.on(eventName, _.throttle(function () {
-            var args;
-            args = arguments;
-            return $rootScope.$apply(function () {
-              return callback.apply(socket, args);
-            });
-          }, 100));
-        },
-        emit: function (eventName, data, callback) {
-          return socket.emit(eventName, data, function () {
-            var args;
-            args = arguments;
-            return $rootScope.$apply(function () {
-              if (callback) {
-                return callback.apply(socket, args);
-              }
-            });
-          });
-        }
-      };
     }
   ]);
 }.call(this));
@@ -22567,73 +22284,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
 }.call(this));
 (function () {
   'use strict';
-  angular.module('NeuroSandCubeConsoleApp').directive('dynamichighchart', function () {
-    var getMergedOptions;
-    getMergedOptions = function (element, options) {
-      var defaultOptions, mergedOptions;
-      defaultOptions = {
-        chart: {
-          renderTo: element[0],
-          animation: false,
-          width: 300,
-          height: 200,
-          shadow: false
-        },
-        credits: { enabled: false },
-        legend: { enabled: false },
-        tooltip: { enabled: false },
-        title: {},
-        series: [{
-            data: [],
-            enableMouseTracking: false
-          }]
-      };
-      mergedOptions = {};
-      if (options != null) {
-        mergedOptions = $.extend(true, {}, defaultOptions, options);
-      } else {
-        mergedOptions = defaultOptions;
-      }
-      return mergedOptions;
-    };
-    return {
-      restrict: 'E',
-      replace: false,
-      scope: {
-        series: '=',
-        options: '=',
-        title: '='
-      },
-      link: function (scope, element, attrs) {
-        var chart, mergedOptions;
-        mergedOptions = getMergedOptions(element, scope.options);
-        chart = new Highcharts.Chart(mergedOptions);
-        chart.setTitle(scope.title, true);
-        return scope.$watch('series', function (newSeries, oldSeries) {
-          var chartSeries, numPoints, point, shift, _i, _len, _ref, _results;
-          chartSeries = chart.series[0];
-          numPoints = chartSeries.data.length;
-          shift = false;
-          if (numPoints >= 30) {
-            shift = true;
-          }
-          _ref = newSeries[0].data;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            point = _ref[_i];
-            _results.push(chartSeries.addPoint([
-              point.x,
-              point.y
-            ], true, shift, false));
-          }
-          return _results;
-        }, false);
-      }
-    };
-  });
-}.call(this));
-(function () {
-  'use strict';
   angular.module('NeuroSandCubeConsoleApp').factory('serverCommunicator', [
     '$rootScope',
     'socket',
@@ -22691,88 +22341,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
         },
         endTrial: endTrial
       };
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
-  angular.module('NeuroSandCubeConsoleApp').factory('serverCommunicator', [
-    '$rootScope',
-    'socket',
-    function ($rootScope, socket) {
-      var connected, endTrial, newStates, _trial;
-      _trial = {};
-      newStates = {};
-      connected = false;
-      socket.on('connection', function (connection) {
-        return connected = connection.connected;
-      });
-      endTrial = function () {
-        return socket.emit('stop_trial', {}, function () {
-        });
-      };
-      socket.on('trial_progress', function (trial) {
-        _trial.active = trial.active;
-        _trial.timeRemaining = trial.time;
-        return _trial.name = trial.name;
-      });
-      socket.on('nsc', function (data) {
-        var date, frame, states, timestamp;
-        states = JSON.parse(data);
-        if (!_.any(states, function (obj) {
-            return obj.id === 'timestamp';
-          })) {
-          return;
-        }
-        timestamp = _.findWhere(states, { id: 'timestamp' }).value;
-        newStates = {};
-        date = new Date();
-        date.setTime(timestamp);
-        frame = _.findWhere(states, { id: 'frame' }).value;
-        return _.forEach(states, function (state) {
-          var _ref;
-          if (!((_ref = state.id) === 'timestamp' || _ref === 'frame')) {
-            return newStates[state.id] = {
-              value: state.value,
-              count: state.change_count,
-              time: date.getTime(),
-              frame: frame
-            };
-          }
-        });
-      });
-      return {
-        connected: function () {
-          return connected;
-        },
-        trial: function () {
-          return _trial;
-        },
-        newStates: function () {
-          return newStates;
-        },
-        endTrial: endTrial
-      };
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
-  angular.module('NeuroSandCubeConsoleApp').controller('TableStateCtrl', [
-    '$scope',
-    'socket',
-    'serverCommunicator',
-    function ($scope, socket, serverCommunicator) {
-      $scope.newStates = serverCommunicator.newStates;
-      return $scope.$watch($scope.newStates, function (newStates, oldStates) {
-        var state;
-        for (state in newStates) {
-          $scope.states[state] = newStates[state];
-        }
-        if (newStates !== oldStates) {
-          return $scope.trial.hasData = true;
-        }
-      }, true);
     }
   ]);
 }.call(this));
@@ -22853,57 +22421,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
 }.call(this));
 (function () {
   'use strict';
-  var createChart;
-  createChart = function (id, state) {
-    return {
-      options: {
-        chart: { type: 'line' },
-        xAxis: {
-          type: 'datetime',
-          tickPixelInterval: 150
-        },
-        series: [{
-            data: [{
-                x: state.time,
-                y: state.value
-              }]
-          }]
-      },
-      series: [{
-          data: [{
-              x: state.time,
-              y: state.value
-            }]
-        }],
-      title: { text: id }
-    };
-  };
-  angular.module('NeuroSandCubeConsoleApp').controller('GraphStateCtrl', [
-    '$scope',
-    'serverCommunicator',
-    function ($scope, serverCommunicator) {
-      $scope.newStates = serverCommunicator.newStates;
-      return $scope.$watch($scope.newStates, function (newStates, oldStates) {
-        var id, state, _results;
-        _results = [];
-        for (id in newStates) {
-          state = newStates[id];
-          if (!(id in $scope.charts || id === 'trial_start')) {
-            $scope.charts[id] = createChart(id, state);
-          }
-          $scope.charts[id].series = [{ data: [] }];
-          _results.push($scope.charts[id].series[0].data.push({
-            x: state.time,
-            y: state.value
-          }));
-        }
-        return _results;
-      }, true);
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
   angular.module('NeuroSandCubeConsoleApp').controller('MapCtrl', [
     '$scope',
     'serverCommunicator',
@@ -22935,58 +22452,6 @@ angular.module('$strap.directives').directive('bsTypeahead', [
       }, true);
     }
   ]);
-}.call(this));
-(function () {
-  'use strict';
-  angular.module('NeuroSandCubeConsoleApp').controller('MapCtrl', [
-    '$scope',
-    'serverCommunicator',
-    function ($scope, serverCommunicator) {
-      var _ref, _ref1, _ref2;
-      if ((_ref = $scope.x) == null) {
-        $scope.x = 0;
-      }
-      if ((_ref1 = $scope.y) == null) {
-        $scope.y = 0;
-      }
-      if ((_ref2 = $scope.angle) == null) {
-        $scope.angle = 0;
-      }
-      $scope.newStates = serverCommunicator.newStates;
-      return $scope.$watch($scope.newStates, function (newStates, oldStates) {
-        var angleState, xState, yState;
-        xState = newStates['player_x'];
-        yState = newStates['player_y'];
-        angleState = newStates['player_angle'];
-        if (xState != null) {
-          $scope.y = (xState.value - 450) / 2;
-        }
-        if (yState != null) {
-          $scope.x = 300 - (yState.value - 280) / 2 - 35;
-        }
-        if (angleState != null) {
-          return $scope.angle = angleState.value;
-        }
-      }, true);
-    }
-  ]);
-}.call(this));
-(function () {
-  'use strict';
-  angular.module('NeuroSandCubeConsoleApp').filter('localDate', function () {
-    return function (input) {
-      var date, enforceLength2;
-      enforceLength2 = function (val) {
-        if (val.toString().length === 1) {
-          return '0' + val;
-        } else {
-          return val;
-        }
-      };
-      date = new Date(input);
-      return enforceLength2(date.getUTCHours()) + ':' + enforceLength2(date.getUTCMinutes()) + ':' + enforceLength2(date.getUTCSeconds());
-    };
-  });
 }.call(this));
 (function () {
   'use strict';
